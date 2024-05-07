@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.TaskManagerApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorPrimary">@color/blue2</item>
+    </style>
+
+    <style name="CustomDatePickerDialogTheme" parent="@style/ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="CustomTimePickerDialogTheme" parent="@style/ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
+
+    <style name="colored_checkBox" parent="Theme.AppCompat.Light">
+        <item name="color">@android:color/holo_red_dark</item>
+    </style>
+
 </resources>

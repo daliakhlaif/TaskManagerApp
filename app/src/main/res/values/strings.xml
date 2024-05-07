@@ -1,3 +1,52 @@
 <resources>
     <string name="app_name">TaskManagerApp</string>
+    <string name="title_activity_task">TaskActivity</string>
+
+    <string name="text_categories">Categories</string>
+    <string name="text_tasks">Tasks To Do</string>
+    <string name="text_task">1 Task</string>
+    <string name="text_category">Home</string>
+    <string name="text_taskToDo">Push code to github </string>
+    <string name="text_priority">Low</string>
+    <string name="text_dueDate">Due : Apr 24, 2024, 08:00 PM</string>
+    <string name="text_taskCreate">Create Task</string>
+    <string name="text_checkComplete">Completed</string>
+    <string name="text_priorityType">Priority</string>
+    <string name="text_categoryType">Category</string>
+    <string name="text_Add_Category">Add Category</string>
+    <string name="text_CatColor">Category Color</string>
+
+    <string name="description_menu">menu icon</string>
+    <string name="description_addButton">add new task button</string>
+    <string name="description_backArrow">back arrow </string>
+    <string name="description_categoryImage">Category Image</string>
+
+    <string name="hint_TaskName">Enter Task Information</string>
+    <string name="hint_EnterCat">Enter Category</string>
+
+    <string name="button_date">Due Date</string>
+    <string name="button_save">New Task</string>
+    <string name="button_type1">Low</string>
+    <string name="button_type2">Medium</string>
+    <string name="button_type3">High</string>
+    <string name="button_addCat">Add New Category</string>
+    <string name="button_addCategory">Add New Category</string>
+    <string name="button_chooseColor">Add Color</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_category_tasks">CategoryTasksActivity</string>
+
+    <string name="string_task">%1$s Task</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="update_task">Update Task</string>
+
+    <string name="notification_channel_name">taskManager </string>
+    <string name="notification_channel_description">Notifications related to task reminders and alarms</string>
+
+    <string name="pick_color">"Pick a Color"</string>
+    <string name="OK">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="content_text">%1$s task is due</string>
+    <string name="content_title">Task Manager App</string>
+    <string name="categoryNameError">Category name is required</string>
 </resources>
