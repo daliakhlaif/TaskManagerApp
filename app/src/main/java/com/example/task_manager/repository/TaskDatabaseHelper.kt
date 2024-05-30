@@ -84,65 +84,13 @@ class TaskDatabaseHelper(context: Context) :
         return taskId
     }
 
-    fun getAllTasksForCategory(categoryId: Int): List<Task> {
+    private fun getTasksByQuery(query: String, vararg args: String): List<Task> {
         val tasks = mutableListOf<Task>()
-        val selectQuery = "SELECT * FROM $TABLE_TASK WHERE $KEY_TASK_CATEGORY_ID = ?"
         val db = readableDatabase
         var cursor: Cursor? = null
 
         try {
-            cursor = db.rawQuery(selectQuery, arrayOf(categoryId.toString()))
-            cursor?.use {
-                while (it.moveToNext()) {
-                    val taskIdIndex = it.getColumnIndex(KEY_ID)
-                    val descriptionIndex = it.getColumnIndex(KEY_TASK_DESCRIPTION)
-                    val dueDateTimeIndex = it.getColumnIndex(KEY_TASK_DUE_DATETIME)
-                    val completedIndex = it.getColumnIndex(KEY_TASK_COMPLETED)
-                    val priorityIndex = it.getColumnIndex(KEY_TASK_PRIORITY)
-
-                    if (taskIdIndex >= 0 && descriptionIndex >= 0 && dueDateTimeIndex >= 0 &&
-                        completedIndex >= 0 && priorityIndex >= 0) {
-
-                        val taskId = it.getInt(taskIdIndex)
-                        val description = it.getString(descriptionIndex)
-                        val dueDateTimeString = it.getString(dueDateTimeIndex)
-                        val completed = it.getInt(completedIndex) == 1
-                        val priorityString = it.getString(priorityIndex)
-
-                        val dueDateTime = LocalDateTime.parse(dueDateTimeString)
-                        val priority = Priority.valueOf(priorityString)
-
-                        val task = Task(taskId, description, dueDateTime, completed, priority, categoryId)
-                        tasks.add(task)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            cursor?.close()
-            db.close()
-        }
-
-
-
-        return tasks
-    }
-
-    fun getAllUpcomingTasks(): List<Task> {
-        val tasks = mutableListOf<Task>()
-        val currentDateTime = LocalDateTime.now()
-        val selectQuery =
-            "SELECT * FROM $TABLE_TASK WHERE $KEY_TASK_DUE_DATETIME > ? ORDER BY $KEY_TASK_DUE_DATETIME"
-        val db = readableDatabase
-        var cursor: Cursor? = null
-
-        try {
-            cursor = db.rawQuery(
-                selectQuery,
-                arrayOf(currentDateTime.toString())
-            )
-
+            cursor = db.rawQuery(query, args)
             cursor?.use {
                 while (it.moveToNext()) {
                     val taskIdIndex = it.getColumnIndex(KEY_ID)
@@ -166,10 +114,8 @@ class TaskDatabaseHelper(context: Context) :
                         val dueDateTime = LocalDateTime.parse(dueDateTimeString)
                         val priority = Priority.valueOf(priorityString)
 
-                        if (dueDateTime.isAfter(currentDateTime)) {
-                            val task = Task(taskId, description, dueDateTime, completed, priority, categoryId)
-                            tasks.add(task)
-                        }
+                        val task = Task(taskId, description, dueDateTime, completed, priority, categoryId)
+                        tasks.add(task)
                     }
                 }
             }
@@ -180,9 +126,20 @@ class TaskDatabaseHelper(context: Context) :
             db.close()
         }
 
-        tasks.sortBy { it.dueDateTime }
-
         return tasks
+    }
+
+    fun getAllTasksForCategory(categoryId: Int): List<Task> {
+        val selectQuery = "SELECT * FROM $TABLE_TASK WHERE $KEY_TASK_CATEGORY_ID = ?"
+        return getTasksByQuery(selectQuery, categoryId.toString())
+    }
+    fun getAllUpcomingTasks(): List<Task> {
+        val currentDateTime = LocalDateTime.now()
+        val selectQuery =
+            "SELECT * FROM $TABLE_TASK WHERE $KEY_TASK_DUE_DATETIME > ? AND $KEY_TASK_COMPLETED = 0 ORDER BY $KEY_TASK_DUE_DATETIME"
+        return getTasksByQuery(selectQuery, currentDateTime.toString())
+            .filter { it.dueDateTime.isAfter(currentDateTime) }
+            .sortedBy { it.dueDateTime }
     }
 
     fun getCategoryById(categoryId: Int): Category? {
@@ -360,7 +317,6 @@ class TaskDatabaseHelper(context: Context) :
         }
         return category
     }
-
     fun removeTask(taskId: Int): Int {
         val db = writableDatabase
         val rowsAffected = db.delete(
@@ -370,5 +326,10 @@ class TaskDatabaseHelper(context: Context) :
         )
         db.close()
         return rowsAffected
+    }
+
+    fun getCompletedTasks(): List<Task> {
+        val selectQuery = "SELECT * FROM $TABLE_TASK WHERE $KEY_TASK_COMPLETED = 1"
+        return getTasksByQuery(selectQuery)
     }
 }

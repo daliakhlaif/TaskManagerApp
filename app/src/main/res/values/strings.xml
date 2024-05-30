@@ -36,6 +36,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_category_tasks">CategoryTasksActivity</string>
 
+    <string name="tasks">%1$s Tasks</string>
     <string name="string_task">%1$s Task</string>
     <string name="edit_task">Edit Task</string>
     <string name="update_task">Update Task</string>
@@ -49,4 +50,10 @@
     <string name="content_text">%1$s task is due</string>
     <string name="content_title">Task Manager App</string>
     <string name="categoryNameError">Category name is required</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="home">Home</string>
+    <string name="completed_tasks">Completed Tasks</string>
 </resources>

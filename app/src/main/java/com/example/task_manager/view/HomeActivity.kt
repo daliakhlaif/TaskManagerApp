@@ -1,18 +1,17 @@
 package com.example.task_manager.view
 
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
+import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,14 +21,13 @@ import com.example.task_manager.adapter.OnTaskItemClickListener
 import com.example.task_manager.adapter.TasksListAdapter
 import com.example.task_manager.model.Category
 import com.example.task_manager.model.Task
-import com.example.task_manager.service.AlarmReceiver
 import com.example.task_manager.util.GlobalKeys.CATEGORY_ID
 import com.example.task_manager.util.GlobalKeys.TASK_ID
 import com.example.task_manager.viewModel.HomeViewModel
 import com.example.task_manager.viewModel.HomeViewModelFactory
 import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.databinding.ActivityHomeBinding
-import java.time.Instant
+import com.google.android.material.navigation.NavigationView
 
 
 class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskItemClickListener {
@@ -39,11 +37,7 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
     private lateinit var recyclerViewTasks: RecyclerView
     private lateinit var categoryAdapter: CategoriesListAdapter
     private lateinit var taskAdapter: TasksListAdapter
-    private lateinit var alarmManager :AlarmManager
-    private lateinit var pendingIntent :PendingIntent
-    private lateinit var task :Task
-
-
+    private lateinit var toggle : ActionBarDrawerToggle
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(this)
     }
@@ -61,21 +55,26 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
             }
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         recyclerView = binding.CategoriesRecycler
         registerBroadcastReceiver()
-        setContentView(binding.root)
         initialize()
     }
 
+
+
+
     private fun initialize(){
+        setupNavigationDrawer()
         initializeRecyclerViews()
         setupAddButtonListener()
         observeViewModel()
     }
+
+
 
     private fun registerBroadcastReceiver() {
         LocalBroadcastManager.getInstance(this)
@@ -89,6 +88,46 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         }
         viewModel.tasks.observe(this) { tasks ->
             taskAdapter.updateTasks(tasks)
+        }
+    }
+
+    private fun setupNavigationDrawer(){
+        val drawerLayout : DrawerLayout = binding.drawerLayout
+        val navView : NavigationView = binding.navView
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(applicationContext, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_completed_tasks -> {
+                    val intent = Intent(applicationContext, CompletedTasksActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    binding.drawerLayout.openDrawer(GravityCompat.START)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -125,7 +164,6 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         intent.putExtra(TASK_ID, task.taskId)
         startActivity(intent)
     }
-
 
 
 }

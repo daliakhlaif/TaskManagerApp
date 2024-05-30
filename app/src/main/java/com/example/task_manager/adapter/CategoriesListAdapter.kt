@@ -44,7 +44,13 @@ class CategoriesListAdapter(
         fun bind(category: Category) {
             categoryName.text = category.name
             binding.color.setBackgroundColor(category.color)
-            binding.tasks.text = context.getString(R.string.string_task, dbHelper.getTaskCountForCategory(category.categoryId).toString())
+            val count = dbHelper.getTaskCountForCategory(category.categoryId)
+
+            binding.tasks.text = if (count > 1) {
+                context.getString(R.string.tasks, count.toString())
+            } else {
+                context.getString(R.string.string_task, count.toString())
+            }
             itemView.setOnClickListener {
                 onCategoryItemClickListener.onItemClick(category)
             }

@@ -23,7 +23,6 @@ import com.example.taskmanagerapp.R
 
 class AlarmReceiver : BroadcastReceiver() {
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context, intent: Intent) {
         createNotificationChannel(context)
 
@@ -96,7 +95,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 100
-
     }
 
 }

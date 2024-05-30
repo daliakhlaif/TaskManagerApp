@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -12,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.task_manager.model.Task
 import com.example.task_manager.repository.TaskDatabaseHelper
 import com.example.task_manager.util.GlobalMethods.formatDate
+import com.example.task_manager.view.CustomCardView
 import com.example.task_manager.view.HomeActivity
-import com.example.taskmanagerapp.databinding.TasksListItemBinding
+import com.example.taskmanagerapp.R
 
 class TasksListAdapter(
     private val context: Context,
@@ -21,35 +24,33 @@ class TasksListAdapter(
     private val onTaskItemClickListener: OnTaskItemClickListener
 ) : RecyclerView.Adapter<TasksListAdapter.ViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = TasksListItemBinding.inflate(
-            LayoutInflater.from(context),
-            parent,
-            false
-        )
-        return ViewHolder(binding)
+        val view = LayoutInflater.from(context).inflate(R.layout.tasks_list_item, parent, false)
+        return ViewHolder(view as CustomCardView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val task = tasks[position]
         holder.bind(task)
     }
+
     fun updateTasks(newTasks: List<Task>) {
-        tasks = newTasks
+        tasks = newTasks.toMutableList()
         notifyDataSetChanged()
     }
+
     override fun getItemCount(): Int {
         return tasks.size
     }
 
-    inner class ViewHolder(private val binding: TasksListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val customCardView: CustomCardView) :
+        RecyclerView.ViewHolder(customCardView) {
         private val dbHelper = TaskDatabaseHelper(context)
+
         fun bind(task: Task) {
             val color = dbHelper.getCategoryById(task.categoryId)?.color
-            binding.taskToDo.text = task.description
-            binding.taskPriority.text = task.priority.name.toString()
+            customCardView.taskToDo.text = task.description
+            customCardView.taskPriority.text = task.priority.name.toString()
 
             val border = GradientDrawable()
             border.setColor(Color.WHITE)
@@ -57,28 +58,37 @@ class TasksListAdapter(
                 border.setStroke(4, color)
             }
             border.cornerRadius = 18F
-            binding.taskPriority.background = border
+            customCardView.taskPriority.background = border
 
-            binding.dueDate.text = formatDate(task.dueDateTime)
+            customCardView.dueDate.text = formatDate(task.dueDateTime)
             itemView.setOnClickListener {
                 onTaskItemClickListener.onItemClick(task)
             }
+
             val checkBoxBorder = GradientDrawable()
             if (color != null) {
                 checkBoxBorder.setColor(color)
                 val colorStateList = ColorStateList.valueOf(color)
-                binding.checkBox.buttonTintList = colorStateList
+                customCardView.checkBox.buttonTintList = colorStateList
             }
 
-            binding.checkBox.setOnClickListener {
-                dbHelper.removeTask(task.taskId)
-                tasks = tasks.filter { it != task }
-                notifyItemRemoved(position)
-                val intent = Intent(HomeActivity.ACTION_TASK_UPDATED)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-            }
+            customCardView.checkBox.isChecked = task.completed
 
+            customCardView.checkBox.setOnClickListener {
+                Handler(Looper.getMainLooper()).post {
+                    task.completed = !task.completed
+                     dbHelper.updateTask(task)
+                        removeTask(adapterPosition)
+                    notifyDataSetChanged()
+                }
+            }
+        }
+
+        private fun removeTask(position: Int) {
+            (tasks as MutableList<Task>).removeAt(position)
+            notifyItemRemoved(position)
+            val intent = Intent(HomeActivity.ACTION_TASK_UPDATED)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
         }
     }
-
 }

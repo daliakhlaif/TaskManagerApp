@@ -12,8 +12,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/MyAppTheme"
         tools:targetApi="31">
+
+        <activity
+            android:name="com.example.task_manager.view.CompletedTasksActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme"
+            />
 
 
         <activity
@@ -22,7 +28,9 @@
              />
         <activity
             android:name="com.example.task_manager.view.HomeActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

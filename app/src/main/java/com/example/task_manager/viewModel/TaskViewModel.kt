@@ -92,7 +92,7 @@ class TaskViewModel(private val context: Context) : ViewModel() {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
-    private fun sendTaskUpdatedBroadcast() {
+     fun sendTaskUpdatedBroadcast() {
         val intent = Intent(HomeActivity.ACTION_TASK_UPDATED)
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }

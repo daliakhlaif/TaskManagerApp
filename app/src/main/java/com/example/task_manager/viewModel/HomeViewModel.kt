@@ -36,7 +36,7 @@ class HomeViewModel(private val context: Context) : ViewModel() {
         _categories.postValue(allCategories)
     }
 
-     fun getFirstUpcomingTask() {
+     private fun getFirstUpcomingTask() {
         val upcomingTasks = databaseHelper.getAllUpcomingTasks()
         _upcomingTask.postValue(upcomingTasks.firstOrNull())
     }
