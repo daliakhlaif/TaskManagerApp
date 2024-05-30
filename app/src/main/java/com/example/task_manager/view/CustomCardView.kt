@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 
 class CustomCardView : CardView {
 
@@ -33,5 +34,16 @@ class CustomCardView : CardView {
         taskToDo = findViewById(R.id.taskToDo)
         dueDate = findViewById(R.id.dueDate)
         taskPriority = findViewById(R.id.taskPriority)
+
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.CustomCardView, 0, 0)
+            val priorityColor = typedArray.getColor(R.styleable.CustomCardView_priorityColor, ContextCompat.getColor(context, android.R.color.black))
+            val description = typedArray.getString(R.styleable.CustomCardView_taskDescription) ?: "No Description"
+
+            taskPriority.setTextColor(priorityColor)
+            taskToDo.text = description
+
+            typedArray.recycle()
+        }
     }
 }

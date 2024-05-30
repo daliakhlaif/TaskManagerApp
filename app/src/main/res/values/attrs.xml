@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomCardView">
+        <attr name="priorityColor" format="color" />
+        <attr name="taskDescription" format="string"/>
+    </declare-styleable>
+</resources>
