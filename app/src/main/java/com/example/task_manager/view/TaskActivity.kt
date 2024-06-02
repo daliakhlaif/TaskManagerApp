@@ -1,19 +1,24 @@
 package com.example.task_manager.view
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -58,6 +63,7 @@ class TaskActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, Ti
 
 
     companion object {
+
         const val EXTRA_TASK_ID = "extra_task_id"
         const val ACTION_CATEGORY_ADDED = "com.example.task_manager.ACTION_CATEGORY_UPDATED"
     }
@@ -71,6 +77,7 @@ class TaskActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, Ti
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.pop_in, R.anim.pop_out)
         binding = ActivityTaskBinding.inflate(layoutInflater)
         viewModel = TaskViewModelFactory(this).create(TaskViewModel::class.java)
         registerBroadcastReceiver()
@@ -162,7 +169,6 @@ class TaskActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, Ti
             finish()
         }
     }
-
 
 
     private fun addCategoryChip(category: Category) {
@@ -281,7 +287,10 @@ class TaskActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, Ti
                 ::selectedCategoryChip.isInitialized
     }
 
-
+    override fun finish() {
+        super.finish()
+        overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.slide_in_left, R.anim.slide_out_right)
+    }
 
 }
 

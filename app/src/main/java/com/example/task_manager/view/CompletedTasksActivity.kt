@@ -19,6 +19,7 @@ import com.example.task_manager.viewModel.CompletedTasksViewModel
 import com.example.task_manager.viewModel.CompletedTasksViewModelFactory
 import com.example.task_manager.viewModel.HomeViewModel
 import com.example.task_manager.viewModel.HomeViewModelFactory
+import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.databinding.ActivityCompletedTasksBinding
 import com.example.taskmanagerapp.databinding.ActivityHomeBinding
 
@@ -42,6 +43,7 @@ class CompletedTasksActivity : AppCompatActivity(), OnTaskItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.pop_up, R.anim.pop_down)
         binding = ActivityCompletedTasksBinding.inflate(layoutInflater)
         setContentView(binding.root)
         registerBroadcastReceiver()
@@ -76,4 +78,6 @@ class CompletedTasksActivity : AppCompatActivity(), OnTaskItemClickListener {
         intent.putExtra(GlobalKeys.TASK_ID, task.taskId)
         startActivity(intent)
     }
+
+
 }
