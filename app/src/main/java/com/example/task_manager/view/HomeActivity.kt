@@ -1,6 +1,6 @@
 package com.example.task_manager.view
 
-
+import android.app.ActivityOptions
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -29,7 +29,6 @@ import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.databinding.ActivityHomeBinding
 import com.google.android.material.navigation.NavigationView
 
-
 class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskItemClickListener {
 
     private lateinit var binding: ActivityHomeBinding
@@ -37,7 +36,7 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
     private lateinit var recyclerViewTasks: RecyclerView
     private lateinit var categoryAdapter: CategoriesListAdapter
     private lateinit var taskAdapter: TasksListAdapter
-    private lateinit var toggle : ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(this)
     }
@@ -55,6 +54,7 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -64,23 +64,17 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         initialize()
     }
 
-
-
-
-    private fun initialize(){
+    private fun initialize() {
         setupNavigationDrawer()
         initializeRecyclerViews()
         setupAddButtonListener()
         observeViewModel()
     }
 
-
-
     private fun registerBroadcastReceiver() {
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(taskUpdatedReceiver, IntentFilter(ACTION_TASK_UPDATED))
     }
-
 
     private fun observeViewModel() {
         viewModel.categories.observe(this) { categories ->
@@ -91,9 +85,9 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         }
     }
 
-    private fun setupNavigationDrawer(){
-        val drawerLayout : DrawerLayout = binding.drawerLayout
-        val navView : NavigationView = binding.navView
+    private fun setupNavigationDrawer() {
+        val drawerLayout: DrawerLayout = binding.drawerLayout
+        val navView: NavigationView = binding.navView
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -117,6 +111,7 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
             }
         }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -146,16 +141,17 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         recyclerViewTasks.adapter = taskAdapter
     }
 
-    private fun setupAddButtonListener(){
+    private fun setupAddButtonListener() {
         binding.addButton.setOnClickListener {
             val intent = Intent(this, TaskActivity::class.java)
             startActivity(intent)
+
         }
     }
 
     override fun onItemClick(category: Category) {
         val intent = Intent(this, CategoryTasksActivity::class.java)
-        intent.putExtra(CATEGORY_ID, category.categoryId )
+        intent.putExtra(CATEGORY_ID, category.categoryId)
         startActivity(intent)
     }
 
@@ -164,7 +160,4 @@ class HomeActivity : AppCompatActivity(), OnCategoryItemClickListener, OnTaskIte
         intent.putExtra(TASK_ID, task.taskId)
         startActivity(intent)
     }
-
-
 }
-

@@ -17,6 +17,7 @@ import com.example.task_manager.util.GlobalKeys
 import com.example.task_manager.util.GlobalKeys.CATEGORY_ID
 import com.example.task_manager.viewModel.CategoryTasksViewModel
 import com.example.task_manager.viewModel.CategoryTasksViewModelFactory
+import com.example.taskmanagerapp.R
 import com.example.taskmanagerapp.databinding.ActivityCategoryTasksBinding
 
 
@@ -41,6 +42,7 @@ class CategoryTasksActivity : AppCompatActivity(), OnTaskItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, R.anim.slide_in_right, R.anim.slide_out_left)
         binding = ActivityCategoryTasksBinding.inflate(layoutInflater)
         categoryId = intent.getIntExtra(CATEGORY_ID, -1)
         setContentView(binding.root)
@@ -86,5 +88,10 @@ class CategoryTasksActivity : AppCompatActivity(), OnTaskItemClickListener {
         val intent = Intent(this, TaskActivity::class.java)
         intent.putExtra(GlobalKeys.TASK_ID, task.taskId)
         startActivity(intent)
+    }
+
+    override fun finish() {
+        super.finish()
+        overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }
